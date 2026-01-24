@@ -27,25 +27,27 @@
 
 ### 1. Клонирование репозитория
 ```bash
-git clone <repository-url>
+git clone https://github.com/visikdarina8-cell/Collectors
 cd project
-
+```
 2. Создание виртуального окружения
-bash
+```bash
 
 python -m venv venv
-
+```
 # Windows
+```bash
 venv\Scripts\activate
-
+```
 # Linux/Mac
+```bash
 source venv/bin/activate
-
+```
 3. Установка зависимостей
-bash
+```bash
 
 pip install -r requirements.txt
-
+```
 4. Настройка базы данных
 
     Установите MySQL
@@ -65,7 +67,7 @@ pip install -r requirements.txt
     Mac: brew install wkhtmltopdf
 
 Запуск приложения
-bash
+```bash
 
 # Активация виртуального окружения
 # Windows
@@ -76,9 +78,9 @@ source venv/bin/activate
 
 # Запуск приложения
 python -m src.main
-
+```
 Структура проекта
-text
+```text
 
 project/
 ├── run.py
@@ -96,18 +98,18 @@ project/
 ├── requirements-dev.txt   # Доп. зависимости
 ├── .env.example          # Шаблон переменных окружения
 └── README.md             # Документация
-
+```
 Конфигурация
 
 Создайте файл .env на основе .env.example:
-env
+```env
 
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=darina
 DB_PASSWORD=1308
 DB_NAME=is21-08
-
+```
 Использование
 Главное меню
 
@@ -152,7 +154,7 @@ DB_NAME=is21-08
         Инфографика и выводы
 
 Тестирование
-bash
+```bash
 
 # Установка dev-зависимостей
 pip install -r requirements-dev.txt
@@ -167,16 +169,17 @@ pytest tests/ --cov=src
 flake8 src/
 black --check src/
 isort --check-only src/
-
+```
 Разработка
 Установка для разработки
-bash
+```bash
 
 pip install -r requirements-dev.txt
 pre-commit install
-
+```
 Форматирование кода
-bash
+```bash
 
 black src/
 isort src/
+```
