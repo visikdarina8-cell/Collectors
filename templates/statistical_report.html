@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ report_name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; }
+        .header { text-align: center; border-bottom: 3px solid #2c3e50; padding-bottom: 20px; margin-bottom: 30px; }
+        .app-name { font-size: 24px; font-weight: bold; color: #2c3e50; margin-bottom: 10px; }
+        .report-name { font-size: 20px; color: #34495e; margin-bottom: 10px; }
+        .section { margin-bottom: 30px; page-break-inside: avoid; }
+        .section-title { background-color: #34495e; color: white; padding: 10px 15px; font-size: 18px; font-weight: bold; border-radius: 5px; margin-bottom: 15px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background-color: #ecf0f1; padding: 15px; border-radius: 8px; border-left: 4px solid #3498db; }
+        .stat-value { font-size: 24px; font-weight: bold; color: #2c3e50; }
+        .stat-label { font-size: 14px; color: #7f8c8d; }
+        .table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .table th { background-color: #34495e; color: white; padding: 12px; text-align: left; font-weight: bold; }
+        .table td { padding: 10px 12px; border-bottom: 1px solid #ddd; }
+        .table tr:nth-child(even) { background-color: #f8f9fa; }
+        .chart-placeholder { background-color: #f8f9fa; border: 2px dashed #bdc3c7; padding: 40px; text-align: center; color: #7f8c8d; margin: 20px 0; }
+        .metric-highlight { background-color: #2ecc71; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold; display: inline-block; margin: 5px; }
+        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #bdc3c7; color: #7f8c8d; font-size: 12px; }
+        .page-break { page-break-before: always; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="app-name">{{ app_name }}</div>
+        <div class="report-name">{{ report_name }}</div>
+        <div class="generation-date">Дата генерации: {{ generation_date }}</div>
+        <div class="generation-date">Автор: Система отчетности</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Общая статистика системы</div>
+        
+        {% if data.general_stats %}
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ data.general_stats.total_collectors or 0 }}</div>
+                <div class="stat-label">Всего коллекционеров</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ data.general_stats.total_collections or 0 }}</div>
+                <div class="stat-label">Всего коллекций</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ data.general_stats.total_catalog_items or 0 }}</div>
+                <div class="stat-label">Предметов в каталоге</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ data.general_stats.total_items_in_collections or 0 }}</div>
+                <div class="stat-label">Всего предметов в коллекциях</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ data.general_stats.recent_collections or 0 }}</div>
+                <div class="stat-label">Новых коллекций за 30 дней</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ data.general_stats.active_collectors or 0 }}</div>
+                <div class="stat-label">Активных коллекционеров</div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if data.additional_metrics %}
+        <div class="section-title" style="margin-top: 30px;">Ключевые метрики</div>
+        <div style="text-align: center;">
+            <span class="metric-highlight">
+                Активных коллекционеров: {{ data.additional_metrics.active_collectors_percentage }}%
+            </span>
+            <span class="metric-highlight" style="background-color: #3498db;">
+                Среднее кол-во предметов: {{ "%.1f"|format(data.additional_metrics.avg_items_per_collection) }}
+            </span>
+            <span class="metric-highlight" style="background-color: #9b59b6;">
+                Новых коллекций: {{ "%.1f"|format(data.additional_metrics.recent_collections_percentage) }}%
+            </span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="section page-break">
+        <div class="section-title">Распределение коллекций по типам</div>
+        
+        {% if data.collection_types %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Тип коллекции</th>
+                    <th>Количество</th>
+                    <th>Доля</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set total = data.collection_types|sum(attribute='count') %}
+                {% for item in data.collection_types %}
+                <tr>
+                    <td>{{ item.collection_type or 'Не указан' }}</td>
+                    <td>{{ item.count }}</td>
+                    <td>{{ "%.1f"|format((item.count / total * 100) if total > 0 else 0) }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Нет данных о типах коллекций</p>
+        {% endif %}
+
+        <div class="chart-placeholder">
+            📊 Место для круговой диаграммы распределения по типам коллекций<br>
+            <small>Для визуализации используйте данные из таблицы выше</small>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Топ-5 самых активных коллекционеров</div>
+        
+        {% if data.top_collectors %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Коллекционер</th>
+                    <th>Коллекций</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for collector in data.top_collectors %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ collector.surname }} {{ collector.name }}</td>
+                    <td>{{ collector.collections_count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Нет данных о коллекционерах</p>
+        {% endif %}
+    </div>
+
+    <div class="section page-break">
+        <div class="section-title">Динамика активности за последние 6 месяцев</div>
+        
+        {% if data.monthly_activity %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Месяц</th>
+                    <th>Создано коллекций</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for month_data in data.monthly_activity %}
+                <tr>
+                    <td>{{ month_data.month }}</td>
+                    <td>{{ month_data.collections_created }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Нет данных о месячной активности</p>
+        {% endif %}
+
+        <div class="chart-placeholder">
+            📈 Место для графика динамики активности<br>
+            <small>Используйте данные из таблицы для построения линейного графика</small>
+        </div>
+    </div>
+
+    <div class="footer">
+        Сгенерировано системой отчетности {{ app_name }} | {{ generation_date }}
+    </div>
+</body>
+</html>
+

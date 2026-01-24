@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ report_name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; }
+        .header { text-align: center; border-bottom: 3px solid #2c3e50; padding-bottom: 20px; margin-bottom: 30px; }
+        .app-name { font-size: 24px; font-weight: bold; color: #2c3e50; margin-bottom: 10px; }
+        .report-name { font-size: 20px; color: #34495e; margin-bottom: 10px; }
+        .toc { margin: 30px 0; padding: 20px; background-color: #f8f9fa; border-radius: 8px; }
+        .toc-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #2c3e50; }
+        .toc-item { margin: 8px 0; }
+        .section { margin-bottom: 40px; page-break-inside: avoid; }
+        .section-title { background-color: #34495e; color: white; padding: 12px 20px; font-size: 18px; font-weight: bold; border-radius: 8px; margin-bottom: 20px; }
+        .table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11px; }
+        .table th { background-color: #2c3e50; color: white; padding: 8px; text-align: left; font-weight: bold; border: 1px solid #34495e; }
+        .table td { padding: 6px 8px; border: 1px solid #ddd; }
+        .table tr:nth-child(even) { background-color: #f8f9fa; }
+        .page-number { text-align: center; margin-top: 20px; font-size: 12px; color: #7f8c8d; }
+        .page-break { page-break-before: always; }
+        .pagination-info { text-align: right; font-size: 12px; color: #7f8c8d; margin-bottom: 10px; }
+        .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #bdc3c7; color: #7f8c8d; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="app-name">{{ app_name }}</div>
+        <div class="report-name">{{ report_name }}</div>
+        <div class="generation-date">Дата генерации: {{ generation_date }}</div>
+    </div>
+
+    <div class="toc">
+        <div class="toc-title">Оглавление</div>
+        <div class="toc-item">1. Коллекционеры с коллекциями (стр. 2)</div>
+        <div class="toc-item">2. Коллекции с типами (стр. 3)</div>
+        <div class="toc-item">3. Предметы каталога (стр. 4)</div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <div class="section">
+        <div class="section-title">Раздел 1: Коллекционеры с коллекциями</div>
+        
+        <div class="pagination-info">Всего записей: {{ data.collectors|length }}</div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Фамилия</th>
+                    <th>Имя</th>
+                    <th>Отчество</th>
+                    <th>Email</th>
+                    <th>Страна</th>
+                    <th>Коллекций</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data.collectors %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.surname }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.patronymic or '' }}</td>
+                    <td>{{ item.email or '' }}</td>
+                    <td>{{ item.country or '' }}</td>
+                    <td>{{ item.collections_count }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center;">Нет данных</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="page-number">Страница 2 • Раздел 1 • Коллекционеры с коллекциями</div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <div class="section">
+        <div class="section-title">Раздел 2: Коллекции с типами</div>
+        
+        <div class="pagination-info">Всего записей: {{ data.collections|length }}</div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>Автор</th>
+                    <th>Тип</th>
+                    <th>Дата создания</th>
+                    <th>Предметов</th>
+                    <th>Описание</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data.collections %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.author or '' }}</td>
+                    <td>{{ item.collection_type or '' }}</td>
+                    <td>{{ format_date(item.date_of_creation) }}</td>
+                    <td>{{ item.number_of_items }}</td>
+                    <td>{{ (item.description or '')[:50] }}{% if (item.description or '')|length > 50 %}...{% endif %}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center;">Нет данных</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="page-number">Страница 3 • Раздел 2 • Коллекции с типами</div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <div class="section">
+        <div class="section-title">Раздел 3: Предметы каталога</div>
+        
+        <div class="pagination-info">Всего записей: {{ data.catalog|length }}</div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>Редкость</th>
+                    <th>Страна</th>
+                    <th>Дата выпуска</th>
+                    <th>Описание</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data.catalog %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.rare or '' }}</td>
+                    <td>{{ item.country or '' }}</td>
+                    <td>{{ format_date(item.release_date) }}</td>
+                    <td>{{ (item.description or '')[:50] }}{% if (item.description or '')|length > 50 %}...{% endif %}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center;">Нет данных</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="page-number">Страница 4 • Раздел 3 • Предметы каталога</div>
+    </div>
+
+    <div class="footer">
+        Сгенерировано системой отчетности {{ app_name }} | {{ generation_date }} | Всего разделов: 3
+    </div>
+</body>
+</html>
