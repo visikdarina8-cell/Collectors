@@ -3,9 +3,16 @@
 """
 import sys
 import logging
+import os
+
+# Добавляем текущую директорию в путь Python
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QPalette, QColor
+
 from ui import DashboardPySide6
+
 
 # Настройка логирования
 logging.basicConfig(
