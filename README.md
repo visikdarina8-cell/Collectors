@@ -269,6 +269,26 @@ flake8 src/
 
 # Проверка типов
 mypy src/
+<<<<<<< HEAD
+=======
+```
+
+## Тестирование
+Запуск тестов
+```bash
+
+# Все тесты
+pytest tests/
+
+# Тесты с покрытием кода
+pytest tests/ --cov=src --cov-report=html
+
+# Конкретный тестовый файл
+pytest tests/test_database.py -v
+
+# Тесты с выводом подробной информации
+pytest tests/ -v -s
+>>>>>>> 33269e262ae0df61fba1db95119515b536071f98
 ```
 
 ## Тестирование
