@@ -126,9 +126,9 @@ nano .env
 # Database Configuration
 DB_HOST=localhost
 DB_PORT=3306
-DB_NAME=is21_08
-DB_USER=darina
-DB_PASSWORD=1308
+DB_NAME=bd
+DB_USER=user
+DB_PASSWORD=password
 DB_CHARSET=utf8mb4
 
 ```
